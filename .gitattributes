@@ -1,0 +1,10 @@
+# Always commit LF
+.gitignore text eof=lf
+.gitattributes text eof=lf
+*.scala text eof=lf
+*.sbt text eof=lf
+*.tex text eof=lf
+*.md text eof=lf
+*.py text eof=lf
+*.conf text eof=lf
+LICENSE text eof=lf

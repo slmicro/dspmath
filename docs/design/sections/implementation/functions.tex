@@ -1,0 +1,361 @@
+% vim: sw=4 ts=4 et
+
+\chapter{Mathematical Functions}
+
+\section{Cosine}
+
+\begin{itemize}
+	\item \textbf{Multiplies}:  2
+	\item \textbf{Adds}: 2
+	\item \textbf{Coefficient shift}:  -4
+	\item \textbf{Precision (18x18)}:  22x23
+	\item \textbf{Precision (25x18)}:  23x23
+	\item \textbf{Coefficients}:  3
+	\item \textbf{Coefficient (4-LUT)}: 36
+	\item \textbf{Coefficient (6-LUT)}: 9
+\end{itemize}
+
+The sine and cosine functions can be approximated by a third-order Chebyshev polynomial:
+
+\begin{equation*}
+	\cos\left(2\pi x\right)\approx4\left(2x-\frac{1}{2}\right)^{3}-3\left(2x-\frac{1}{2}\right)
+\end{equation*}
+
+This requires 2 multiplies and 3 adds ($3x=x\ll1+x$).  However, a 4-input LUT can select between 16 different coefficients across 25 LUT, and a 7-series 6-input LUT as a pair of 5-input LUTs with 2 outputs each can provide 24-bit coefficients in 12 LUTs with 32 segments.  This approach allows quadratic segments rather than a Chebyshev cubic, while providing a much lower error.\footnote{The actual coefficients are slightly more precise and limited to 25 bits rather than 5-digit decimal denominators.}
+
+\begin{equation*}
+	\cos(\varphi)=
+	\begin{cases}
+		1 - \frac{53}{44007}\varphi^2, & \varphi < \frac{1}{128},\\
+		\frac{65506}{65585} - \frac{225}{93389}\varphi - \frac{46}{38287}\varphi^2, & \varphi < \frac{2}{128},\\
+		\frac{94036}{94491} - \frac{385}{79999}\varphi - \frac{61}{51018}\varphi^2, & \varphi < \frac{3}{128},\\
+		\frac{59039}{59685} - \frac{373}{51775}\varphi - \frac{116}{97727}\varphi^2, & \varphi < \frac{4}{128},\\
+		\frac{50533}{51523} - \frac{951}{99284}\varphi - \frac{31}{26373}\varphi^2, & \varphi < \frac{5}{128},\\
+		\frac{67973}{70073} - \frac{1059}{88769}\varphi - \frac{26}{22393}\varphi^2, & \varphi < \frac{6}{128},\\
+		\frac{90250}{94311} - \frac{763}{53535}\varphi - \frac{83}{72558}\varphi^2, & \varphi < \frac{7}{128},\\
+		\frac{26367}{28004} - \frac{153}{9250}\varphi - \frac{86}{76513}\varphi^2, & \varphi < \frac{8}{128},\\
+		\frac{80311}{86928} - \frac{731}{38906}\varphi - \frac{29}{26331}\varphi^2, & \varphi < \frac{9}{128},\\
+		\frac{38500}{42589} - \frac{477}{22723}\varphi - \frac{101}{93859}\varphi^2, & \varphi < \frac{10}{128},\\
+		\frac{35933}{40744} - \frac{2286}{98771}\varphi - \frac{104}{99217}\varphi^2, & \varphi < \frac{11}{128},\\
+		\frac{64430}{75117} - \frac{1698}{67271}\varphi - \frac{101}{99233}\varphi^2, & \varphi < \frac{12}{128},\\
+		\frac{36583}{43998} - \frac{1636}{59977}\varphi - \frac{92}{93405}\varphi^2, & \varphi < \frac{13}{128},\\
+		\frac{67912}{84551} - \frac{2731}{93376}\varphi - \frac{68}{71599}\varphi^2, & \varphi < \frac{14}{128},\\
+		\frac{73579}{95185} - \frac{1996}{64083}\varphi - \frac{49}{53715}\varphi^2, & \varphi < \frac{15}{128},\\
+		\frac{38219}{51581} - \frac{453}{13739}\varphi - \frac{26}{29799}\varphi^2, & \varphi < \frac{16}{128},\\
+		\frac{33461}{47321} - \frac{3453}{99461}\varphi - \frac{76}{91489}\varphi^2, & \varphi < \frac{17}{128},\\
+		\frac{63647}{94775} - \frac{131}{3601}\varphi - \frac{35}{44479}\varphi^2, & \varphi < \frac{18}{128},\\
+		\frac{12469}{19655} - \frac{3271}{86186}\varphi - \frac{5}{6746}\varphi^2, & \varphi < \frac{19}{128},\\
+		\frac{43853}{73616} - \frac{2791}{70774}\varphi - \frac{40}{57663}\varphi^2, & \varphi < \frac{20}{128},\\
+		\frac{46264}{83273} - \frac{4014}{98327}\varphi - \frac{61}{94644}\varphi^2, & \varphi < \frac{21}{128},\\
+		\frac{25609}{49813} - \frac{4151}{98570}\varphi - \frac{49}{82519}\varphi^2, & \varphi < \frac{22}{128},\\
+		\frac{30250}{64171} - \frac{3939}{90970}\varphi - \frac{51}{94156}\varphi^2, & \varphi < \frac{23}{128},\\
+		\frac{2464}{5763} - \frac{3833}{86361}\varphi - \frac{47}{96272}\varphi^2, & \varphi < \frac{24}{128},\\
+		\frac{11443}{29902} - \frac{458}{10097}\varphi - \frac{33}{76112}\varphi^2, & \varphi < \frac{25}{128},\\
+		\frac{22355}{66357} - \frac{707}{15294}\varphi - \frac{32}{84679}\varphi^2, & \varphi < \frac{26}{128},\\
+		\frac{24952}{85957} - \frac{95}{2022}\varphi - \frac{22}{68469}\varphi^2, & \varphi < \frac{27}{128},\\
+		\frac{24065}{99041} - \frac{3639}{76408}\varphi - \frac{19}{71982}\varphi^2, & \varphi < \frac{28}{128},\\
+		\frac{15044}{77113} - \frac{4506}{93575}\varphi - \frac{10}{48553}\varphi^2, & \varphi < \frac{29}{128},\\
+		\frac{14655}{99877} - \frac{2743}{56480}\varphi - \frac{1}{6781}\varphi^2, & \varphi < \frac{30}{128},\\
+		\frac{4266}{43523} - \frac{1053}{21551}\varphi - \frac{7}{78985}\varphi^2, & \varphi < \frac{31}{128},\\
+		\frac{3713}{75671} - \frac{3612}{73657}\varphi - \frac{2}{67647}\varphi^2, & \varphi < \frac{32}{128},\\
+	\end{cases}
+\end{equation*}
+
+These coefficients produce extremely low spectral energy outside the fundamental sine frequency, with no harmonics above -120dB and an RMS of around -123dB, and so are suitable for LFOs and FM operators.  The low distortion comes from constraining the ends of each segment to avoid $C^0$ discontinuities and using a least-squares quadratic fit.
+
+This reduces the cost of cosine to a quadratic (2 multiply-adds) and two adds (to flip the sign or the phase direction) plus 48 LUT for the coefficients.
+
+\section{Base-2 Exponential}
+
+\begin{itemize}
+	\item \textbf{Multiplies}:  2
+	\item \textbf{Adds}: 2
+	\item \textbf{Coefficient shift}:  -5
+	\item \textbf{Precision (18x18)}:  23x23
+	\item \textbf{Precision (25x18)}:  23x23
+\end{itemize}
+
+Another piecewise quadratic for $h=2^s$ segments.
+
+\begin{equation*}
+	2^x\approx1+\frac{\ln(2)}{h}x+\frac{1}{2}\left(\frac{\ln(2)}{h}x\right)^{2}, x\in[0,\frac{1}{h})
+\end{equation*}
+
+Because the curvature of $2^x$ is the same for each integer segment, we can calculate the mantissa and shift it by the integer portion.  This is not unique to the integer portion:  breaking up the mantissa allows the same approximation if the integer portion is instead extended to include a limited fractional portion, for example breaking the mantissa into two segments would require ultimately multiplying by $2^n$ or $2^{n+\frac{1}{2}}$ depending on the top bit of the mantissa.
+
+\begin{align*}
+	h=&2^s \\
+	k=&\lfloor x \rfloor \\
+	m=&\left\{x\right\} \\
+	u=&mh \\
+	j=&\lfloor u \rfloor \\
+	r=&\frac{\left\{u\right\}}{h} \\
+	\beta=&\frac{\ln\left(2\right)}{h} \\
+	\alpha=&\frac{2^\frac{1}{h}-1}{\beta+\frac{1}{2}\beta^2}\\
+	f\left(t\right)=&\alpha\left(\beta t + \frac{1}{2}\left(\beta t\right)^2\right)+1\\
+	2^x\approx& 2^k2^{\frac{j}{h}}f\left(r\right)
+\end{align*}
+
+The coefficients for the $2^x$ approximation are stored for each $\frac{j}{h}$ segment by multiplying the coefficients by $2^{\frac{j}{h}}$ and selecting the coefficients using $j$.  The $\alpha$ value must be incorporated into both $\beta$ terms separately, as $\alpha\beta$ and $\sqrt{\alpha}\beta$, to avoid the additional multiply by $\alpha$.  To preserve precision when dealing with small multipliers, the multiply by $2^\frac{j}{h}$ is implemented as a small tree of partial product sums:  the coefficients and $r$ value are scaled small, making their upper bits zero, but the result may be close to 1 and would lose this advantage if pushed back through a multiplier.
+
+\section{Reciprocal}
+
+\begin{itemize}
+	\item \textbf{Multiplies}:  2
+	\item \textbf{Adds}: 2
+	\item \textbf{Coefficient shift}:  -4 (32-segment), -5 (64-segment)
+	\item \textbf{Precision (18x18)}:  22x23, 23x23
+	\item \textbf{Precision (25x18)}:  23x23
+\end{itemize}
+
+
+For a reciprocal, we use a piecewise quadratic approximation between $x\in[0.5,1)$.  This approximation is then scaled.
+
+The quadratic approximations given are fit for $x$ in the given ranges, shifted left to remove the selection bits.  That is, the $x$ ranges are not literally the ranges given, but rather the offset from those ranges:
+
+\begin{equation*}
+	\varphi = \frac{x - x_0}{h}
+\end{equation*}
+
+The value $h$ is the denominator of the $x$ ranges and $x_0$ is the beginning of the range in question.  This means all passed values of $x$ are in a range starting with 0.
+
+This allows us to shift out the upper fractional bits of $x$, so an 18-bit-wide multiplier input would reach 23 bits for a 32-segment approximation.  The coefficients can each shift left 4 bits as well for a 32-segment and 5 bits for a 64-segment, allowing an 18-bit wide multiplier to achieve 22-23 bits.  The 7-series has a 25x18 multiplier, which is sufficient to reach full precision; the ECP5 has an 18x18, which can also reach the full precision possible even with a Newton-Rhapson pass.
+
+This works on the simple principle:
+
+\begin{equation*}
+	\frac{1}{x}=\frac{2^{k}}{2^{k}x}
+\end{equation*}
+
+In this case, we know that $x\in(0,1)$ ($d\varphi$ cannot be 0).  If the first bit of $x$ is on, $k=1$; else $k=0$.  This reduces the demand to one row of muxes, not a full CLZ and barrel shifter as a range of $x\in[1,2)$.
+
+A 32-segment approximation produces a 0.00014\% relative error.  The coefficients (simplified) are shown below.
+
+\begin{equation*}
+	\frac{1}{x}\approx
+	\begin{cases}
+		2 - \frac{4163}{66639}\,\varphi + \frac{69}{37000}\,\varphi^2, & x < \frac{33}{64},\\
+		\frac{64}{33} - \frac{1473}{25075}\,\varphi + \frac{133}{78108}\,\varphi^2, & x < \frac{34}{64},\\
+		\frac{32}{17} - \frac{5474}{98915}\,\varphi + \frac{43}{27583}\,\varphi^2, & x < \frac{35}{64},\\
+		\frac{64}{35} - \frac{3977}{76152}\,\varphi + \frac{44}{30751}\,\varphi^2, & x < \frac{36}{64},\\
+		\frac{16}{9} - \frac{167}{3383}\,\varphi + \frac{129}{97993}\,\varphi^2, & x < \frac{37}{64},\\
+		\frac{64}{37} - \frac{319}{6826}\,\varphi + \frac{83}{68376}\,\varphi^2, & x < \frac{38}{64},\\
+		\frac{32}{19} - \frac{4407}{99466}\,\varphi + \frac{85}{75777}\,\varphi^2, & x < \frac{39}{64},\\
+		\frac{64}{39} - \frac{3901}{92739}\,\varphi + \frac{62}{59693}\,\varphi^2, & x < \frac{40}{64},\\
+		\frac{8}{5} - \frac{3991}{99805}\,\varphi + \frac{81}{84061}\,\varphi^2, & x < \frac{41}{64},\\
+		\frac{64}{41} - \frac{3661}{96186}\,\varphi + \frac{29}{32381}\,\varphi^2, & x < \frac{42}{64},\\
+		\frac{32}{21} - \frac{1635}{45077}\,\varphi + \frac{11}{13192}\,\varphi^2, & x < \frac{43}{64},\\
+		\frac{64}{43} - \frac{2013}{58172}\,\varphi + \frac{18}{23147}\,\varphi^2, & x < \frac{44}{64},\\
+		\frac{16}{11} - \frac{928}{28079}\,\varphi + \frac{49}{67458}\,\varphi^2, & x < \frac{45}{64},\\
+		\frac{64}{45} - \frac{2902}{91843}\,\varphi + \frac{13}{19131}\,\varphi^2, & x < \frac{46}{64},\\
+		\frac{32}{23} - \frac{2027}{67033}\,\varphi + \frac{61}{95819}\,\varphi^2, & x < \frac{47}{64},\\
+		\frac{64}{47} - \frac{1143}{39460}\,\varphi + \frac{43}{71997}\,\varphi^2, & x < \frac{48}{64},\\
+		\frac{4}{3} - \frac{2776}{99957}\,\varphi + \frac{23}{40994}\,\varphi^2, & x < \frac{49}{64},\\
+		\frac{64}{49} - \frac{2091}{78461}\,\varphi + \frac{19}{36003}\,\varphi^2, & x < \frac{50}{64},\\
+		\frac{32}{25} - \frac{1213}{47392}\,\varphi + \frac{37}{74447}\,\varphi^2, & x < \frac{51}{64},\\
+		\frac{64}{51} - \frac{668}{27153}\,\varphi + \frac{1}{2134}\,\varphi^2, & x < \frac{52}{64},\\
+		\frac{16}{13} - \frac{2011}{84980}\,\varphi + \frac{4}{9043}\,\varphi^2, & x < \frac{53}{64},\\
+		\frac{64}{53} - \frac{2014}{88411}\,\varphi + \frac{26}{62203}\,\varphi^2, & x < \frac{54}{64},\\
+		\frac{32}{27} - \frac{107}{4876}\,\varphi + \frac{9}{22762}\,\varphi^2, & x < \frac{55}{64},\\
+		\frac{64}{55} - \frac{1475}{69728}\,\varphi + \frac{32}{85469}\,\varphi^2, & x < \frac{56}{64},\\
+		\frac{8}{7} - \frac{658}{32247}\,\varphi + \frac{32}{90173}\,\varphi^2, & x < \frac{57}{64},\\
+		\frac{64}{57} - \frac{1636}{83065}\,\varphi + \frac{5}{14851}\,\varphi^2, & x < \frac{58}{64},\\
+		\frac{32}{29} - \frac{1405}{73861}\,\varphi + \frac{9}{28151}\,\varphi^2, & x < \frac{59}{64},\\
+		\frac{64}{59} - \frac{1813}{98624}\,\varphi + \frac{17}{55948}\,\varphi^2, & x < \frac{60}{64},\\
+		\frac{16}{15} - \frac{1215}{68353}\,\varphi + \frac{21}{72656}\,\varphi^2, & x < \frac{61}{64},\\
+		\frac{64}{61} - \frac{398}{23143}\,\varphi + \frac{13}{47245}\,\varphi^2, & x < \frac{62}{64},\\
+		\frac{32}{31} - \frac{1255}{75388}\,\varphi + \frac{12}{45773}\,\varphi^2, & x < \frac{63}{64},\\
+		\frac{64}{63} - \frac{1592}{98741}\,\varphi + \frac{15}{60007}\,\varphi^2, & x < 1,\\
+	\end{cases}	
+\end{equation*}
+
+Using 64 segments brings the error down to 0.000018\%, in line with a 16-segment linear approximation and a single Newton-Rhapson pass, at the expense of an additional row of LUT on a 7-series.  This avoids any 25x36 multipliers, significantly reducing DSP usage.  The coefficients for this are shown below.
+
+\begin{equation*}
+	\frac{1}{x}\approx
+	\left\{
+	\begin{array}{@{}l l@{}}
+		2 - \frac{1836}{58759}\,\varphi + \frac{43}{90138}\,\varphi^2, & x < \frac{65}{128},\\
+		\frac{128}{65} - \frac{86}{2839}\,\varphi + \frac{43}{94396}\,\varphi^2, & x < \frac{66}{128},\\
+		\frac{64}{33} - \frac{2367}{80561}\,\varphi + \frac{43}{98786}\,\varphi^2, & x < \frac{67}{128},\\
+		\frac{128}{67} - \frac{2010}{70499}\,\varphi + \frac{34}{81687}\,\varphi^2, & x < \frac{68}{128},\\
+		\frac{32}{17} - \frac{753}{27205}\,\varphi + \frac{15}{37664}\,\varphi^2, & x < \frac{69}{128},\\
+		\frac{128}{69} - \frac{1843}{68558}\,\varphi + \frac{25}{65563}\,\varphi^2, & x < \frac{70}{128},\\
+		\frac{64}{35} - \frac{1775}{67956}\,\varphi + \frac{11}{30111}\,\varphi^2, & x < \frac{71}{128},\\
+		\frac{128}{71} - \frac{2439}{96064}\,\varphi + \frac{35}{99943}\,\varphi^2, & x < \frac{72}{128},\\
+		\frac{16}{9} - \frac{1308}{52979}\,\varphi + \frac{1}{2977}\,\varphi^2, & x < \frac{73}{128},\\
+		\frac{128}{73} - \frac{333}{13865}\,\varphi + \frac{11}{34121}\,\varphi^2, & x < \frac{74}{128},\\
+		\frac{64}{37} - \frac{335}{14333}\,\varphi + \frac{4}{12921}\,\varphi^2, & x < \frac{75}{128},\\
+		\frac{128}{75} - \frac{1219}{53574}\,\varphi + \frac{23}{77328}\,\varphi^2, & x < \frac{76}{128},\\
+		\frac{32}{19} - \frac{1731}{78118}\,\varphi + \frac{28}{97929}\,\varphi^2, & x < \frac{77}{128},\\
+		\frac{128}{77} - \frac{2067}{95752}\,\varphi + \frac{26}{94547}\,\varphi^2, & x < \frac{78}{128},\\
+		\frac{64}{39} - \frac{2024}{96211}\,\varphi + \frac{1}{3779}\,\varphi^2, & x < \frac{79}{128},\\
+		\frac{128}{79} - \frac{1997}{97377}\,\varphi + \frac{24}{94207}\,\varphi^2, & x < \frac{80}{128},\\
+		\frac{8}{5} - \frac{261}{13051}\,\varphi + \frac{24}{97807}\,\varphi^2, & x < \frac{81}{128},\\
+		\frac{128}{81} - \frac{1739}{89144}\,\varphi + \frac{16}{67665}\,\varphi^2, & x < \frac{82}{128},\\
+		\frac{64}{41} - \frac{1753}{92094}\,\varphi + \frac{20}{87733}\,\varphi^2, & x < \frac{83}{128},\\
+		\frac{128}{83} - \frac{1814}{97637}\,\varphi + \frac{17}{77318}\,\varphi^2, & x < \frac{84}{128},\\
+		\frac{32}{21} - \frac{163}{8986}\,\varphi + \frac{2}{9427}\,\varphi^2, & x < \frac{85}{128},\\
+		\frac{128}{85} - \frac{1701}{96020}\,\varphi + \frac{17}{83008}\,\varphi^2, & x < \frac{86}{128},\\
+		\frac{64}{43} - \frac{1703}{98408}\,\varphi + \frac{6}{30337}\,\varphi^2, & x < \frac{87}{128},\\
+		\frac{128}{87} - \frac{1588}{93909}\,\varphi + \frac{7}{36635}\,\varphi^2, & x < \frac{88}{128},\\
+		\frac{16}{11} - \frac{1433}{86702}\,\varphi + \frac{14}{75811}\,\varphi^2, & x < \frac{89}{128},\\
+		\frac{128}{89} - \frac{1341}{82990}\,\varphi + \frac{7}{39205}\,\varphi^2, & x < \frac{90}{128},\\
+		\frac{64}{45} - \frac{228}{14429}\,\varphi + \frac{16}{92649}\,\varphi^2, & x < \frac{91}{128},\\
+		\frac{128}{91} - \frac{236}{15269}\,\varphi + \frac{14}{83785}\,\varphi^2, & x < \frac{92}{128},\\
+		\frac{32}{23} - \frac{1009}{66724}\,\varphi + \frac{1}{6183}\,\varphi^2, & x < \frac{93}{128},\\
+		\frac{128}{93} - \frac{1153}{77913}\,\varphi + \frac{15}{95786}\,\varphi^2, & x < \frac{94}{128},\\
+		\frac{64}{47} - \frac{57}{3935}\,\varphi + \frac{11}{72521}\,\varphi^2, & x < \frac{95}{128},\\
+		\frac{128}{95} - \frac{858}{60499}\,\varphi + \frac{14}{95261}\,\varphi^2, & x < \frac{96}{128},\\
+	\end{array}\quad
+	\begin{array}{@{}l l@{}}
+		\frac{4}{3} - \frac{1301}{93677}\,\varphi + \frac{14}{98285}\,\varphi^2, & x < \frac{97}{128},\\
+		\frac{128}{97} - \frac{815}{59912}\,\varphi + \frac{8}{57927}\,\varphi^2, & x < \frac{98}{128},\\
+		\frac{64}{49} - \frac{1282}{96195}\,\varphi + \frac{1}{7466}\,\varphi^2, & x < \frac{99}{128},\\
+		\frac{128}{99} - \frac{890}{68151}\,\varphi + \frac{3}{23087}\,\varphi^2, & x < \frac{100}{128},\\
+		\frac{32}{25} - \frac{520}{40627}\,\varphi + \frac{12}{95161}\,\varphi^2, & x < \frac{101}{128},\\
+		\frac{128}{101} - \frac{595}{47421}\,\varphi + \frac{7}{57184}\,\varphi^2, & x < \frac{102}{128},\\
+		\frac{64}{51} - \frac{463}{37635}\,\varphi + \frac{1}{8413}\,\varphi^2, & x < \frac{103}{128},\\
+		\frac{128}{103} - \frac{997}{82638}\,\varphi + \frac{8}{69293}\,\varphi^2, & x < \frac{104}{128},\\
+		\frac{16}{13} - \frac{1169}{98785}\,\varphi + \frac{8}{71321}\,\varphi^2, & x < \frac{105}{128},\\
+		\frac{128}{105} - \frac{761}{65550}\,\varphi + \frac{2}{18347}\,\varphi^2, & x < \frac{106}{128},\\
+		\frac{64}{53} - \frac{349}{30637}\,\varphi + \frac{8}{75495}\,\varphi^2, & x < \frac{107}{128},\\
+		\frac{128}{107} - \frac{895}{80057}\,\varphi + \frac{5}{48526}\,\varphi^2, & x < \frac{108}{128},\\
+		\frac{32}{27} - \frac{357}{32533}\,\varphi + \frac{7}{69850}\,\varphi^2, & x < \frac{109}{128},\\
+		\frac{128}{109} - \frac{836}{77601}\,\varphi + \frac{1}{10257}\,\varphi^2, & x < \frac{110}{128},\\
+		\frac{64}{55} - \frac{641}{60597}\,\varphi + \frac{8}{84325}\,\varphi^2, & x < \frac{111}{128},\\
+		\frac{128}{111} - \frac{493}{47457}\,\varphi + \frac{5}{54147}\,\varphi^2, & x < \frac{112}{128},\\
+		\frac{8}{7} - \frac{779}{76345}\,\varphi + \frac{5}{55617}\,\varphi^2, & x < \frac{113}{128},\\
+		\frac{128}{113} - \frac{793}{79111}\,\varphi + \frac{3}{34268}\,\varphi^2, & x < \frac{114}{128},\\
+		\frac{64}{57} - \frac{527}{53509}\,\varphi + \frac{7}{82091}\,\varphi^2, & x < \frac{115}{128},\\
+		\frac{128}{115} - \frac{509}{52592}\,\varphi + \frac{4}{48149}\,\varphi^2, & x < \frac{116}{128},\\
+		\frac{32}{29} - \frac{908}{95457}\,\varphi + \frac{5}{61763}\,\varphi^2, & x < \frac{117}{128},\\
+		\frac{128}{117} - \frac{905}{96789}\,\varphi + \frac{7}{88714}\,\varphi^2, & x < \frac{118}{128},\\
+		\frac{64}{59} - \frac{819}{89095}\,\varphi + \frac{5}{64999}\,\varphi^2, & x < \frac{119}{128},\\
+		\frac{128}{119} - \frac{300}{33191}\,\varphi + \frac{3}{39995}\,\varphi^2, & x < \frac{120}{128},\\
+		\frac{16}{15} - \frac{389}{43764}\,\varphi + \frac{5}{68346}\,\varphi^2, & x < \frac{121}{128},\\
+		\frac{128}{121} - \frac{75}{8579}\,\varphi + \frac{3}{42037}\,\varphi^2, & x < \frac{122}{128},\\
+		\frac{64}{61} - \frac{235}{27327}\,\varphi + \frac{6}{86167}\,\varphi^2, & x < \frac{123}{128},\\
+		\frac{128}{123} - \frac{241}{28486}\,\varphi + \frac{4}{58863}\,\varphi^2, & x < \frac{124}{128},\\
+		\frac{32}{31} - \frac{551}{66191}\,\varphi + \frac{6}{90457}\,\varphi^2, & x < \frac{125}{128},\\
+		\frac{128}{125} - \frac{391}{47731}\,\varphi + \frac{3}{46327}\,\varphi^2, & x < \frac{126}{128},\\
+		\frac{64}{63} - \frac{769}{95383}\,\varphi + \frac{5}{79072}\,\varphi^2, & x < \frac{127}{128},\\
+		\frac{128}{127} - \frac{257}{32385}\,\varphi + \frac{2}{32385}\,\varphi^2, & x < 1,\\
+	\end{array}
+	\right.
+\end{equation*}
+
+\section{Hyperbolic tangent}
+
+\begin{itemize}
+	\item \textbf{Multiplies}:  5
+	\item \textbf{Adds}: 7
+	\item \textbf{Precision (18x18)}:  22x23
+	\item \textbf{Precision (25x18)}:  23x23
+\end{itemize}
+
+Hyperbolic tangent is moderately expensive.  It requires two quadratics, both an exponent calculation and a reciprocal, along with the multiplication for $\alpha$:
+
+\begin{equation*}
+	2\left(\frac{1}{1+e^{-2\alpha x}}-0.5\right)
+\end{equation*}
+
+Together this totals only 5 $25\times18$ multiplies.
+
+\chapter{DSP Functions}
+
+\section{PolyBLEP}
+
+\begin{itemize}
+	\item \textbf{Multiplies}:  4
+	\item \textbf{Adds}: 5
+	\item \textbf{Precision (18x18)}:  23x23
+	\item \textbf{Precision (25x18)}:  23x23
+\end{itemize}
+
+PolyBLEP corrects time-domain discontinuities, such as in the square, pulse, saw, and in operator hard sync.
+
+A common two-point PolyBLEP uses the piecewise function below:
+
+\begin{equation*}
+	\text{PolyBLEP}\left(\varphi\right)=
+	\begin{cases}
+		2\frac{\varphi}{d\varphi}-\left(\frac{\varphi}{d\varphi}\right)^2-1, & \varphi < d\varphi, \\ 
+		\left(\frac{1-\varphi}{d\varphi}\right)^2-2\frac{1-\varphi}{d\varphi}+1, & 1-\varphi \leq d\varphi, \\
+		0, & \text{otherwise.}
+	\end{cases}
+\end{equation*}
+
+This operation requires the following operations:
+
+\begin{enumerate}
+	\item $\frac{1}{d\varphi}$ (64-segment)
+	\item $ax$
+	\item $x^2+a$
+	\item $x+a$
+	\item $x-a$
+\end{enumerate}
+
+Overall that means $\frac{1}{d\varphi}$, two multiplies, one add ($\frac{1-\varphi}{d\varphi}$ can be handled as a fused multiply-add).
+
+\section{Elliptical BLEP}
+
+Being researched.  Elliptical BLEP requires more resources--many more multipliers--to beat PolyBLEP, but is much better behaved at higher frequencies.  PolyBLEP is basically two quadratics when accounting for the reciprocal operation, while 8-order biquad is 20 multipliers.  An alternative to this is PolyBLEP at a higher sample output rate and raise the clock rate.
+
+\section{Rectified sine}
+
+\begin{itemize}
+	\item \textbf{Multiplies}:  2
+	\item \textbf{Adds}: 7
+	\item \textbf{Precision (18x18)}:  22x23
+	\item \textbf{Precision (25x18)}:  23x23
+\end{itemize}
+
+A full- or half-rectified sine is created using the same 32-segment quarter cosine.  
+
+The rectified sine uses the (normalized) formula:
+
+\begin{equation*}
+	\left|\sin\left(\varphi\right)\right|=\frac{2}{\pi}-\frac{4}{pi}\sum_{k=1}^{\infty}{\frac{\cos\left(2k\varphi\right)}{4k^2-1}}
+\end{equation*}
+
+Sine oscillators capable of rectified sine store a separate 32-entry look-up table indexed as 4 blocks of 8 segments each, with the segments covering the end of the quarter cosine as y approaches 0.  For $k=1\rightarrow n$,
+
+\begin{equation*}
+	n=
+	\begin{cases}
+		10,& f_0 \geq 2048Hz, \\
+		17,& f_0 \geq 1024Hz, \\
+		35,& f_0 \geq 512Hz, \\
+		70,& otherwise
+	\end{cases}
+\end{equation*}
+
+The group to use is selected while in the cosine portion of the phase, avoiding discontinuities; the cosine function is used unless rectification is enabled and the phase is in a rectification region.
+
+The half wave rectified sine is simply an average of a sine and a full wave rectified sine:
+
+\begin{equation*}
+	\sin_{hwr}\left(\varphi\right)=\frac{\left|\sin\left(\varphi\right)\right|+\sin\left(\varphi\right)}{2}
+\end{equation*}
+
+To generate this, both the full-wave and half-wave coefficients are used, summed, and halved.  The sum of two polynomials is the polynomial using the sums of their corresponding coefficients, and a polynomial can be multiplied by multiplying its coefficients.  On the negative half of cosine, the segment of the table only producing cosine itself is skipped, resulting in a sample value of 0.
+
+\section{Diode soft clip}
+
+\begin{itemize}
+	\item \textbf{Multiplies}:  5
+	\item \textbf{Adds}: 7
+	\item \textbf{Precision (18x18)}:  22x23
+	\item \textbf{Precision (25x18)}:  23x23
+\end{itemize}
+
+Wave shaping with $\tanh(\alpha x)$.  Requires full $\alpha x\in(-\infty,\infty)$ domain.
+
+\section{LFO Shaping}
+
+The \textit{Deform} LFO parameter is similar to the one in Surge XT, essentially a $\tanh()$ soft clip,
+
+\begin{equation*}
+	f_d\left(x\right)=\tanh\left(A\left(f\left(x\right)+1\right)\right)-1
+\end{equation*}

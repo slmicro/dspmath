@@ -1,0 +1,13 @@
+# vim
+*.swp
+# LaTeX intermediate files and outputs
+*.out
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.log
+*.pdf
+*.run.xml
+*.synctex.gz
+*.toc
